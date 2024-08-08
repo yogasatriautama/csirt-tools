@@ -38,7 +38,6 @@ Ensure you have the following tools installed:
 1. **Clone the Repository**
 
    git clone https://github.com/yogasatriautama/csirt-tools.git
-   cd csirt-tools
 
 2. **Make the Script Executable**
 
