@@ -45,7 +45,7 @@ Ensure you have the following tools installed:
 
 3. **Usage**
 
-   ./csirt_tools.sh
+   sudo ./csirt_tools.sh
 
 ### **Menu Options**
 - **System Version Information: Displays system version details.**
