@@ -229,7 +229,7 @@ while true; do
             grep -RPn "(passthru|shell_exec|system|phpinfo|base64_decode|chmod|mkdir|fopen|fclose|fclose|readfile) *\(" /var/www/ | head -20
             echo ""
             echo -e "\033[1;34mFile Modified:\033[0m"
- 	    find $1 -type f \( -path /dev -o -path /proc -o -path /sys \) -prune -o -print0 | xargs -0 stat --format '%Y :%y %n' | sort -nr | cut -d: -f2- | head
+ 	    find / -type f \( -path /dev -o -path /proc -o -path /sys \) -prune -o -print0 | xargs -0 stat --format '%Y :%y %n' 2>/dev/null | sort -nr | cut -d: -f2- | head
             echo ""
             echo -e "\033[1;33mRecommendation: If any suspicious files are found, consider isolating the system for further investigation.\033[0m"
             ;;
