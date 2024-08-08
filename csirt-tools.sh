@@ -233,7 +233,11 @@ while true; do
         8)
             while true; do
                 display_access_log_menu
-		logfile=$( [ -f /var/log/apache2/access.log ] && echo /var/log/apache2/access.log || ([ -f /var/log/httpd/access.log ] && echo /var/log/httpd/access.log || ([ -f /var/log/nginx/access.log ] && echo /var/log/nginx/access.log)))
+		default_logfile=$( [ -f /var/log/apache2/access.log ] && echo /var/log/apache2/access.log || ([ -f /var/log/httpd/access.log ] && echo /var/log/httpd/access.log || ([ -f /var/log/nginx/access.log ] && echo /var/log/nginx/access.log)))
+		echo ""
+		echo -e "\033[1;32mPlease enter the path to the access log file (press Enter to use default: $default_logfile):\033[0m"
+		read logfile
+		logfile=${logfile:-$default_logfile}
                 case $access_choice in
                     1)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
@@ -322,7 +326,12 @@ while true; do
         9)
             while true; do
                 display_auth_log_menu
-		authlog=$( [ -f /var/log/auth.log ] && echo /var/log/auth.log || ([ -f /var/log/secure ] && echo /var/log/secure || echo /var/log/messages))
+		default_authlog=$( [ -f /var/log/auth.log ] && echo /var/log/auth.log || ([ -f /var/log/secure ] && echo /var/log/secure || echo /var/log/messages))
+		echo ""
+		echo -e "\033[1;32mPlease enter the path to the auth log file (press Enter to use default: $default_authlog):\033[0m"
+		read logfile
+		authlog=${authlog:-$default_authlog}
+ 
                 case $access_choice in
             1)
                 echo -e "\e[1;32m" # Green color

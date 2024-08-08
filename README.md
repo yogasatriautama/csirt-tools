@@ -15,23 +15,10 @@
 - **Backdoor Files Detection**
 - **Access Log Analysis**
 - **Authentication Log Analysis**
-- **RAM Usage Monitoring**
 
 ## **Installation**
 
-To use CSIRT Tools, you need to have a Unix-like operating system with bash installed. The script is designed to be run on systems with common tools available.
-
-### **Prerequisites**
-
-Ensure you have the following tools installed:
-- `bash`
-- `awk`
-- `grep`
-- `ps`
-- `free`
-- `vmstat`
-- `netstat` or `ss` (depending on your system)
-- `systemctl` or `service` (depending on your system)
+To use CSIRT Tools, you need to have a Linux operating system with bash installed. The script is designed to be run on systems with common tools available.
 
 ### **Steps**
 
@@ -57,7 +44,6 @@ Ensure you have the following tools installed:
 - **Backdoor Files: Searches for potential backdoor files.**
 - **Access Log Analysis: Analyzes access logs for suspicious activities.**
 - **Auth Log Analysis: Analyzes authentication logs for security events.**
-- **RAM Usage: Displays current RAM usage and memory-consuming processes.**
 
 ## **Access Log and Auth Log Paths**
 The script is designed to handle different log paths based on common conventions. If logs are located in non-standard directories, you may need to adjust the script accordingly.
