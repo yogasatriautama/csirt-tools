@@ -289,25 +289,25 @@ while true; do
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mSQL Injection Payloads:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        grep -Ei "union|select|insert|drop|update|delete|load_file|outfile|version|database|concat" "$logfile" 
+                        grep -Ei "union|select|insert|drop|update|delete|load_file|outfile|version|database|concat" "$logfile" | less
                         ;;
                     10)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mXSS Payloads:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        grep -Ei "<script>|%3Cscript%3E" "$logfile" 
+                        grep -Ei "<script>|%3Cscript%3E" "$logfile" | less
                         ;;
                     11)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mLFI/RFI Payloads:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        grep -Ei "/etc/passwd|access.log|auth.log" "$logfile" 
+                        grep -Ei "/etc/passwd|access.log|auth.log" "$logfile" | less 
                         ;;
                     12)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mAdmin Page Access Attempts:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        grep -Ei "admin|administrator|adm|backend|cpanel|myadmin|phpmyadmin" "$logfile"
+                        grep -Ei "admin|administrator|adm|backend|cpanel|myadmin|phpmyadmin" "$logfile" | less
                         ;;
                     13)
                         break
