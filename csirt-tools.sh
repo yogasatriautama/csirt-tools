@@ -29,7 +29,7 @@ display_menu() {
     echo "2) Check Process, Service, Apps and StarUp"
     echo "3) Check Network Communication"
     echo "4) Check User"
-    echo "5) Check Directory Listings"
+    echo "5) Check File Modification Search"
     echo "6) Check Writable Directory/Files/SUID"
     echo "7) Check Backdoor Files"
     echo "8) Check Access Log"
@@ -184,17 +184,50 @@ while true; do
             echo -e "\033[1;33mRecommendation: Validate user accounts and review login history for unauthorized access.\033[0m"
             ;;
         5)
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;32mDirectory Listings:\033[0m"
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;34mHome Directory:\033[0m"
-            ls -alrt -R /home | head -20
-            echo ""
-            echo -e "\033[1;34mWWW Directory:\033[0m"
-            ls -alrt -R /var/www | head -20
-            echo ""
-            echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories.\033[0m"
-            ;;
+# Default directory options
+default_dir=$( [ -d /var/www/html ] && echo /var/www/html || ([ -d /var/www ] && echo /var/www || ([ -d /home ] && echo /home)))
+
+# Default date to today's date
+default_date=$(date '+%Y-%m-%d')
+
+echo ""
+echo -e "\033[1;32mPlease enter the directory path (press Enter to use default: $default_dir):\033[0m"
+read target_dir
+target_dir=${target_dir:-$default_dir}
+
+if [ ! -d "$target_dir" ]; then
+  echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
+  exit 1
+fi
+
+echo ""
+echo -e "\033[1;32mPlease enter the date for the search (press Enter to use today's date: $default_date):\033[0m"
+read target_date
+target_date=${target_date:-$default_date}
+echo -e ""
+echo -e "\033[1;32m----------------------------------------\033[0m"
+echo -e "\033[1;32mDirectory Listings: $target_dir\033[0m"
+echo -e "\033[1;32m----------------------------------------\033[0m"
+echo -e ""
+ls -alrt "$target_dir"
+
+echo -e ""
+echo -e "\033[1;34mSearching for files modified after: $target_date\033[0m"
+
+# Menampilkan file terbaru yang diurutkan berdasarkan waktu modifikasi setelah tanggal tertentu
+modified_files=$(find "$target_dir" -type f -newermt "$target_date" -ls | head -20)
+
+if [ -z "$modified_files" ]; then
+  echo -e "\033[1;31mNo files found modified after $target_date.\033[0m"
+else
+  echo -e "\033[1;34mFiles Modified After $target_date (Recursive):\033[0m"
+  echo "$modified_files"
+fi
+
+echo ""
+echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories.\033[0m"
+
+        ;;
         6)
             echo -e "\033[1;32m----------------------------------------\033[0m"
             echo -e "\033[1;32mDirectory/Files Writable:\033[0m"
