@@ -10,7 +10,7 @@
 - **Process, Service, and Startup Information**
 - **Network Communication Analysis**
 - **User Information**
-- **Directory Listings**
+- **File Modification Search**
 - **Writable Directories/Files/SUID**
 - **Backdoor Files Detection**
 - **Access Log Analysis**
@@ -33,17 +33,6 @@ To use CSIRT Tools, you need to have a Linux operating system with bash installe
 3. **Usage**
 
    sudo ./csirt_tools.sh
-
-### **Menu Options**
-- **System Version Information: Displays system version details.**
-- **Process, Service, and Startup Information: Shows running processes and services set to start on boot.**
-- **Network Communication Information: Provides information about network connections and configurations.**
-- **User Information: Lists user accounts and login information.**
-- **Directory Listings: Shows files and directories in critical locations.**
-- **Directory/Files/SUID Writable: Checks for writable files and directories.**
-- **Backdoor Files: Searches for potential backdoor files.**
-- **Access Log Analysis: Analyzes access logs for suspicious activities.**
-- **Auth Log Analysis: Analyzes authentication logs for security events.**
 
 ## **Access Log and Auth Log Paths**
 The script is designed to handle different log paths based on common conventions. If logs are located in non-standard directories, you may need to adjust the script accordingly.

@@ -184,48 +184,43 @@ while true; do
             echo -e "\033[1;33mRecommendation: Validate user accounts and review login history for unauthorized access.\033[0m"
             ;;
         5)
-# Default directory options
-default_dir=$( [ -d /var/www/html ] && echo /var/www/html || ([ -d /var/www ] && echo /var/www || ([ -d /home ] && echo /home)))
+	    default_dir=$( [ -d /var/www/html ] && echo /var/www/html || ([ -d /var/www ] && echo /var/www || ([ -d /home ] && echo /home)))
+	    default_date=$(date '+%Y-%m-%d')
+	    echo ""
+	    echo -e "\033[1;32mPlease enter the directory path (press Enter to use default: $default_dir):\033[0m"
+	    read target_dir
+	    target_dir=${target_dir:-$default_dir}
 
-# Default date to today's date
-default_date=$(date '+%Y-%m-%d')
+	    if [ ! -d "$target_dir" ]; then
+	    echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
+	    exit 1
+     	    fi
 
-echo ""
-echo -e "\033[1;32mPlease enter the directory path (press Enter to use default: $default_dir):\033[0m"
-read target_dir
-target_dir=${target_dir:-$default_dir}
+	    echo ""
+	    echo -e "\033[1;32mPlease enter the date for the search (press Enter to use today's date: $default_date):\033[0m"
+	    read target_date
+  	    target_date=${target_date:-$default_date}
+	    echo -e ""
+ 	    echo -e "\033[1;32m----------------------------------------\033[0m"
+	    echo -e "\033[1;32mDirectory Listings: $target_dir\033[0m"
+	    echo -e "\033[1;32m----------------------------------------\033[0m"
+	    echo -e ""
+	    ls -alrt "$target_dir"
 
-if [ ! -d "$target_dir" ]; then
-  echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
-  exit 1
-fi
+	    echo -e ""
+	    echo -e "\033[1;34mSearching for files modified after: $target_date\033[0m"
 
-echo ""
-echo -e "\033[1;32mPlease enter the date for the search (press Enter to use today's date: $default_date):\033[0m"
-read target_date
-target_date=${target_date:-$default_date}
-echo -e ""
-echo -e "\033[1;32m----------------------------------------\033[0m"
-echo -e "\033[1;32mDirectory Listings: $target_dir\033[0m"
-echo -e "\033[1;32m----------------------------------------\033[0m"
-echo -e ""
-ls -alrt "$target_dir"
+	    modified_files=$(find "$target_dir" -type f -newermt "$target_date" -ls | head -20)
 
-echo -e ""
-echo -e "\033[1;34mSearching for files modified after: $target_date\033[0m"
+	    if [ -z "$modified_files" ]; then
+                echo -e "\033[1;31mNo files found modified after $target_date.\033[0m"
+            else
+  		echo -e "\033[1;34mFiles Modified After $target_date (Recursive):\033[0m"
+	   echo "$modified_files"
+	   fi
 
-# Menampilkan file terbaru yang diurutkan berdasarkan waktu modifikasi setelah tanggal tertentu
-modified_files=$(find "$target_dir" -type f -newermt "$target_date" -ls | head -20)
-
-if [ -z "$modified_files" ]; then
-  echo -e "\033[1;31mNo files found modified after $target_date.\033[0m"
-else
-  echo -e "\033[1;34mFiles Modified After $target_date (Recursive):\033[0m"
-  echo "$modified_files"
-fi
-
-echo ""
-echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories.\033[0m"
+	    echo ""
+	    echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories.\033[0m"
 
         ;;
         6)
