@@ -21,7 +21,6 @@
 
 To use CSIRT Tools, you need to have a Linux operating system with bash installed. The script is designed to be run on systems with common tools available.
 
-### **Steps**
 ```
 1. git clone https://github.com/yogasatriautama/csirt-tools.git
 2. chmod +x csirt_tools.sh
