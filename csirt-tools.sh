@@ -1,10 +1,10 @@
 #!/bin/bash
+# Copyright Yoga CSIRT
 
 # Function to display the banner
 display_banner() {
     clear
     cat << "EOF"
-
 
 
            ___________ ________  ______
@@ -26,15 +26,16 @@ display_menu() {
     echo -e "\e[1;33m" # Yellow color
     echo "Please choose an option:"
     echo "1) Check System Version"
-    echo "2) Check Process, Service, Apps and StarUp"
+    echo "2) Check Process, Service and Apps"
     echo "3) Check Network Communication"
-    echo "4) Check User"
+    echo "4) Check User, Crontab and History"
     echo "5) Check File Modification Search"
     echo "6) Check Writable Directory/Files/SUID"
     echo "7) Check Backdoor Files"
     echo "8) Check Access Log"
     echo "9) Check Auth Log"
-    echo "10) Exit"
+    echo "10) Check System Log"
+    echo "11) Exit"
     echo -e "\e[0;033m"
     read -p "Enter your choice [1-10]: " choice
 }
@@ -108,7 +109,7 @@ while true; do
             ;;
         2)
             echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;32mProcess, Service, Apps and StartUp Information:\033[0m"
+            echo -e "\033[1;32mProcess, Service and Apps Information:\033[0m"
             echo -e "\033[1;32m----------------------------------------\033[0m"
 	    echo -e "\033[1;34mRunning all process:\033[0m"
             ps -aux
@@ -125,8 +126,6 @@ while true; do
             echo -e "\033[1;34mInstalled Packages:\033[0m"
 	    dpkg -l
  	    echo ""
-            echo -e "\033[1;34mDisplay Crontab for Each User:\033[0m"
-            for user in $(cut -f1 -d: /etc/passwd); do echo "Crontab for $user:"; crontab -u $user -l; echo ""; done
             echo -e "\033[1;33mRecommendation: Review running processes and startup for any suspicious activity or unknown services.\033[0m"
             ;;
         3)
@@ -164,7 +163,7 @@ while true; do
             echo -e "\033[1;32m----------------------------------------\033[0m"
             echo -e "\033[1;32mUser Information:\033[0m"
             echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;34m Users:\033[0m"
+            echo -e "\033[1;34mUsers:\033[0m"
             cat /etc/passwd
             echo ""
             echo -e "\033[1;34mUsers with Bash:\033[0m"
@@ -180,8 +179,12 @@ while true; do
             echo -e "\033[1;34mUsers with Sudo:\033[0m"
             getent group sudo | awk -F: '{print $4}' | tr ',' '\n' | while read user; do echo "User: $user"; sudo -l -U $user; echo "--------------------------------"; done
             echo ""
- 
-            echo -e "\033[1;33mRecommendation: Validate user accounts and review login history for unauthorized access.\033[0m"
+            echo -e "\033[1;34mDisplay Crontab for Each User:\033[0m"
+            for user in $(cut -f1 -d: /etc/passwd); do echo "Crontab for $user:"; crontab -u $user -l; echo ""; done
+ 	    echo ""
+            echo -e "\033[1;34mDisplay bash_history for Each User:\033[0m"; 
+	    for user in $(cut -f1 -d: /etc/passwd); do homedir=$(getent passwd "$user" | cut -d: -f6); bash_history_file="$homedir/.bash_history"; if [ -f "$bash_history_file" ]; then echo -e "\033[1;34mbash_history for $user:\033[0m"; nl -w3 -s'. ' "$bash_history_file"; else echo "No bash_history found for $user"; fi; echo ""; done
+	    echo -e "\033[1;33mRecommendation: Validate user accounts and review login history for unauthorized access.\033[0m"
             ;;
         5)
 	    default_dir=$( [ -d /var/www/html ] && echo /var/www/html || ([ -d /var/www ] && echo /var/www || ([ -d /home ] && echo /home)))
@@ -436,8 +439,62 @@ while true; do
             esac
             done
 	    ;;
-        10)
-            echo "Exiting script..."
+	10)
+	     while true; do
+    	     echo -e "\033[1;34m************************************************************\033[0m"
+    	     echo -e "\033[1;34mSystem log Analysis:\033[0m"
+             echo -e "\033[1;34m************************************************************\033[0m"
+ 
+    	     echo "1) View recent system errors"
+   	     echo "2) View recent anomalies or unusual activity"
+    	     echo "3) Search for specific error messages"
+    	     echo "4) Analyze logs by IP address"
+    	     echo "5) Exit"
+    
+    	     default_syslog=$( [ -f /var/log/syslog ] && echo /var/log/syslog || echo /var/log/messages )
+    	     read -p "Enter your choice (1-5): " choice
+    	     echo -e "\e[1;32mPlease enter the path to the syslog file (press Enter to use default: $default_syslog):\e[0m"
+    	     read logfile
+    	     logfile=${logfile:-$default_syslog}
+
+    		case $choice in
+            1)
+            	echo -e "\e[1;32mRecent system errors:\e[0m"
+            	grep -i "error" "$logfile" | tail -n 20
+            	echo ""
+            	;;
+            2)
+            	echo -e "\e[1;32mRecent anomalies or unusual activity:\e[0m"
+            	grep -i -e "fail" -e "warning" -e "alert" "$logfile" | tail -n 20
+            	echo ""
+            	;;
+            3)
+            	echo ""
+            	read -p "Enter error message to search for: " search_term
+            	echo -e "\e[1;32mSearching for '$search_term':\e[0m"
+            	grep -i "$search_term" "$logfile"
+            	echo ""
+            	;;
+            4)
+            	echo ""
+            	grep -oP '(?<=from\s)([0-9]{1,3}\.){3}[0-9]{1,3}' "$logfile" | sort | uniq
+            	read -p "Enter IP address to analyze: " ip
+            	echo -e "\e[1;32mLog entries from IP address $ip:\e[0m"
+            	grep -i "$ip" "$logfile"
+            	echo ""
+            	;;
+            5)
+            	break
+            	;;
+            *)
+            	echo -e "\e[1;31mInvalid choice. Please enter a number between 1 and 5.\e[0m"
+            	echo ""
+            	;;
+	    esac
+	    done
+	    ;;
+        11)
+	    echo "Exiting script..."
             exit 0
             ;;
         *)
@@ -447,4 +504,3 @@ while true; do
 
     echo ""
 done
-

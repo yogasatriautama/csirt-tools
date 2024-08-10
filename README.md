@@ -7,21 +7,22 @@
 ## **Features**
 
 - **System Version Information**
-- **Process, Service, and Startup Information**
+- **Process, Service, and Apps**
 - **Network Communication Analysis**
-- **User Information**
+- **User, Crojobs, History**
 - **File Modification Search**
 - **Writable Directories/Files/SUID**
 - **Backdoor Files Detection**
 - **Access Log Analysis**
 - **Authentication Log Analysis**
+- **System Log Analysis**
 
 ## **Installation**
 
 To use CSIRT Tools, you need to have a Linux operating system with bash installed. The script is designed to be run on systems with common tools available.
 
 ### **Steps**
-
+```
 1. **Clone the Repository**
 
    git clone https://github.com/yogasatriautama/csirt-tools.git
@@ -33,12 +34,7 @@ To use CSIRT Tools, you need to have a Linux operating system with bash installe
 3. **Usage**
 
    sudo ./csirt_tools.sh
+```
 
-## **Access Log and Auth Log Paths**
-The script is designed to handle different log paths based on common conventions. If logs are located in non-standard directories, you may need to adjust the script accordingly.
-
-## **Contributing**
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
-
-## **License**
-This project is licensed under the MIT License - see the LICENSE file for details.
+## **Tested on:**
+- Ubuntu 16+
