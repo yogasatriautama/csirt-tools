@@ -59,6 +59,7 @@ display_access_log_menu() {
     echo "11) Search for LFI/RFI payload"
     echo "12) Search for Admin Page"
     echo "13) Return to Main Menu"
+    echo -e "\e[0;033m"
     read -p "Enter your choice [1-13]: " access_choice
 }
 
@@ -75,9 +76,26 @@ display_auth_log_menu() {
     echo "5) SSH key usage"
     echo "6) Login attempts from a specific IP"
     echo "7) Activity of a specific user"
-    echo "8) Back to main menu"
+    echo "8) Return to main menu"
+    echo -e "\e[0;033m"
     read -p "Enter your choice [1-8]: " access_choice
 }
+
+
+display_sys_log_menu() {
+    echo -e "\033[1;34m************************************************************\033[0m"
+    echo -e "\033[1;34mSystem log Analysis:\033[0m"
+    echo -e "\033[1;34m************************************************************\033[0m"
+    echo "Please choose an analysis option:"
+    echo "1) View recent system errors"
+    echo "2) View recent anomalies or unusual activity"
+    echo "3) Search for specific error messages"
+    echo "4) Analyze logs by IP address"
+    echo "5) Return to main menu"
+    echo -e "\e[0;033m"
+    read -p "Enter your choice (1-5): " access_choice
+}
+
 
 # Display the banner for the first time
 display_banner
@@ -441,23 +459,13 @@ while true; do
 	    ;;
 	10)
 	     while true; do
-    	     echo -e "\033[1;34m************************************************************\033[0m"
-    	     echo -e "\033[1;34mSystem log Analysis:\033[0m"
-             echo -e "\033[1;34m************************************************************\033[0m"
- 
-    	     echo "1) View recent system errors"
-   	     echo "2) View recent anomalies or unusual activity"
-    	     echo "3) Search for specific error messages"
-    	     echo "4) Analyze logs by IP address"
-    	     echo "5) Exit"
-    
+             display_sys_log_menu
     	     default_syslog=$( [ -f /var/log/syslog ] && echo /var/log/syslog || echo /var/log/messages )
-    	     read -p "Enter your choice (1-5): " choice
-    	     echo -e "\e[1;32mPlease enter the path to the syslog file (press Enter to use default: $default_syslog):\e[0m"
-    	     read logfile
+	     echo -e "\e[1;32mPlease enter the path to the syslog file (press Enter to use default: $default_syslog):\e[0m"
+	     read logfile
     	     logfile=${logfile:-$default_syslog}
 
-    		case $choice in
+    		case $access_choice in
             1)
             	echo -e "\e[1;32mRecent system errors:\e[0m"
             	grep -i "error" "$logfile" | tail -n 20
