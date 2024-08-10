@@ -96,12 +96,12 @@ while true; do
             uname -a
             cat /etc/lsb-release
             echo ""
-	    echo -e "\033[1;34mView Disk Usage:\033[0m"
+	    echo -e "\033[1;34mDisk Usage:\033[0m"
 	    df -h
 	    echo ""
 	    lsblk
 	    echo ""
-	    echo -e "\033[1;34mView RAM Usage:\033[0m"
+	    echo -e "\033[1;34mRAM Usage:\033[0m"
 	    free -mh
 	    echo ""
             echo -e "\033[1;33mRecommendation: Check for known vulnerabilities or patches related to the detected system version.\033[0m"
@@ -110,19 +110,19 @@ while true; do
             echo -e "\033[1;32m----------------------------------------\033[0m"
             echo -e "\033[1;32mProcess, Service, Apps and StartUp Information:\033[0m"
             echo -e "\033[1;32m----------------------------------------\033[0m"
-	    echo -e "\033[1;34mView running all process:\033[0m"
+	    echo -e "\033[1;34mRunning all process:\033[0m"
             ps -aux
             echo ""
-	    echo -e "\033[1;34mView the current user process:\033[0m"
+	    echo -e "\033[1;34mCurrent user process:\033[0m"
             ps -ef | grep -v '^root' | grep -E '/tmp|/dev/shm|nc|curl|wget|bash|sh|python|perl|php'
             echo ""
-	    echo -e "\033[1;34mView all services that are set to run at startup:\033[0m"
+	    echo -e "\033[1;34mServices that are set to run at startup:\033[0m"
      	    systemctl list-unit-files --type=service | grep enabled
             echo ""
-            echo -e "\033[1;34mView the status of running services:\033[0m"
+            echo -e "\033[1;34mStatus of running services:\033[0m"
 	    systemctl list-units --type=service --state=running
             echo ""
-            echo -e "\033[1;34mView Installed Packages:\033[0m"
+            echo -e "\033[1;34mInstalled Packages:\033[0m"
 	    dpkg -l
  	    echo ""
             echo -e "\033[1;34mDisplay Crontab for Each User:\033[0m"
@@ -133,29 +133,29 @@ while true; do
             echo -e "\033[1;32m----------------------------------------\033[0m"
             echo -e "\033[1;32mNetwork Communication Information:\033[0m"
             echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;34mView Inbound Connections:\033[0m"
-            netstat -tulnp | head -20
+            echo -e "\033[1;34mInbound Connections:\033[0m"
+            netstat -tulnp 
             echo ""
-            echo -e "\033[1;34mView Outbound Connections:\033[0m"
-            netstat -antup | head -20
+            echo -e "\033[1;34mOutbound Connections:\033[0m"
+            netstat -antup
             echo ""
-            echo -e "\033[1;34mView Established Connections:\033[0m"
+            echo -e "\033[1;34mEstablished Connections:\033[0m"
             netstat -antup | grep "ESTA"
             echo ""
-            echo -e "\033[1;34mView Firewall:\033[0m"
+            echo -e "\033[1;34mFirewall:\033[0m"
             echo ""
             iptables -L -v -n
 	    echo ""
-            echo -e "\033[1;34mView Connected Users:\033[0m"
+            echo -e "\033[1;34mConnected Users:\033[0m"
             w
             echo ""
-            echo -e "\033[1;34mView DNS Configuration:\033[0m"
+            echo -e "\033[1;34mDNS Configuration:\033[0m"
             cat /etc/resolv.conf
             echo ""
-            echo -e "\033[1;34mView Hostname:\033[0m"
+            echo -e "\033[1;34mHostname:\033[0m"
             cat /etc/hostname
             echo ""
-            echo -e "\033[1;34mView Hosts File:\033[0m"
+            echo -e "\033[1;34mHosts File:\033[0m"
             cat /etc/hosts
             echo ""
             echo -e "\033[1;33mRecommendation: Monitor network traffic for unusual connections, and verify the legitimacy of established connections.\033[0m"
@@ -164,20 +164,20 @@ while true; do
             echo -e "\033[1;32m----------------------------------------\033[0m"
             echo -e "\033[1;32mUser Information:\033[0m"
             echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;34mView Users:\033[0m"
+            echo -e "\033[1;34m Users:\033[0m"
             cat /etc/passwd
             echo ""
-            echo -e "\033[1;34mView Users with Bash:\033[0m"
+            echo -e "\033[1;34mUsers with Bash:\033[0m"
             cat /etc/passwd | grep "bash"
             echo ""
-            echo -e "\033[1;34mView Last Logins:\033[0m"
+            echo -e "\033[1;34mLast Logins:\033[0m"
             lastlog
             last
             echo ""
-            echo -e "\033[1;34mView currently logged-in users:\033[0m"
+            echo -e "\033[1;34mCurrent logged-in users:\033[0m"
             w
             echo ""
-            echo -e "\033[1;34mView Users with Sudo:\033[0m"
+            echo -e "\033[1;34mUsers with Sudo:\033[0m"
             getent group sudo | awk -F: '{print $4}' | tr ',' '\n' | while read user; do echo "User: $user"; sudo -l -U $user; echo "--------------------------------"; done
             echo ""
  
@@ -186,43 +186,44 @@ while true; do
         5)
 	    default_dir=$( [ -d /var/www/html ] && echo /var/www/html || ([ -d /var/www ] && echo /var/www || ([ -d /home ] && echo /home)))
 	    default_date=$(date '+%Y-%m-%d')
+
 	    echo ""
 	    echo -e "\033[1;32mPlease enter the directory path (press Enter to use default: $default_dir):\033[0m"
 	    read target_dir
 	    target_dir=${target_dir:-$default_dir}
 
 	    if [ ! -d "$target_dir" ]; then
-	    echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
-	    exit 1
-     	    fi
+    	      echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
+    	    exit 1
+	    fi
 
 	    echo ""
-	    echo -e "\033[1;32mPlease enter the date for the search (press Enter to use today's date: $default_date):\033[0m"
+	    echo -e "\033[1;32mPlease enter the date for the search in the last 30 days before (press Enter to use today's date: $default_date):\033[0m"
 	    read target_date
-  	    target_date=${target_date:-$default_date}
+	    target_date=${target_date:-$default_date}
+
+	    start_date=$(date -d "$target_date -30 days" '+%Y-%m-%d')
+
 	    echo -e ""
- 	    echo -e "\033[1;32m----------------------------------------\033[0m"
+	    echo -e "\033[1;32m----------------------------------------\033[0m"
 	    echo -e "\033[1;32mDirectory Listings: $target_dir\033[0m"
 	    echo -e "\033[1;32m----------------------------------------\033[0m"
 	    echo -e ""
 	    ls -alrt "$target_dir"
 
-	    echo -e ""
-	    echo -e "\033[1;34mSearching for files modified after: $target_date\033[0m"
+	   echo -e ""
+	   modified_files=$(find "$target_dir" -type f -newermt "$start_date" ! -newermt "$target_date" -ls)
 
-	    modified_files=$(find "$target_dir" -type f -newermt "$target_date" -ls | head -20)
+	   if [ -z "$modified_files" ]; then
+    	     echo -e "\033[1;31mNo files found modified in the last 30 days before $target_date.\033[0m"
+	  else
+    	    echo -e "\033[1;34mFiles Modified in the Last 30 Days Before $target_date (Recursive):\033[0m"
+    	    echo "$modified_files"
+	  fi
 
-	    if [ -z "$modified_files" ]; then
-                echo -e "\033[1;31mNo files found modified after $target_date.\033[0m"
-            else
-  		echo -e "\033[1;34mFiles Modified After $target_date (Recursive):\033[0m"
-	   echo "$modified_files"
-	   fi
-
-	    echo ""
-	    echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories.\033[0m"
-
-        ;;
+	  echo ""
+	  echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories.\033[0m"
+          ;;
         6)
             echo -e "\033[1;32m----------------------------------------\033[0m"
             echo -e "\033[1;32mDirectory/Files Writable:\033[0m"
@@ -247,16 +248,27 @@ while true; do
             ;;
  
         7)
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;32mSearching for Backdoor Files...\033[0m"
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;34mHome Directory:\033[0m"
-            grep -RPn "(passthru|shell_exec|system|phpinfo|base64_decode|chmod|mkdir|fopen|fclose|fclose|readfile) *\(" /home/ | head -20
-            echo ""
-            echo -e "\033[1;34mWWW Directory:\033[0m"
-            grep -RPn "(passthru|shell_exec|system|phpinfo|base64_decode|chmod|mkdir|fopen|fclose|fclose|readfile) *\(" /var/www/ | head -20
-            echo ""
-            echo -e "\033[1;33mRecommendation: If any suspicious files are found, consider isolating the system for further investigation.\033[0m"
+	    default_dir="/var/www/html"
+
+	    echo ""
+	    echo -e "\033[1;32mPlease enter the directory path to search for backdoor files (press Enter to use default: $default_dir):\033[0m"
+	    read target_dir
+	    target_dir=${target_dir:-$default_dir}
+
+	    if [ ! -d "$target_dir" ]; then
+	    	echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
+  	    exit 1
+	    fi
+
+	    echo -e "\033[1;32m----------------------------------------\033[0m"
+	    echo -e "\033[1;32mSearching for Backdoor Files...\033[0m"
+	    echo -e "\033[1;32m----------------------------------------\033[0m"
+
+	    echo -e "\033[1;34mTarget Directory: $target_dir\033[0m"
+	    grep -RPn "(passthru|shell_exec|system|phpinfo|base64_decode|chmod|mkdir|fopen|fclose|fclose|readfile) *\(" "$target_dir"
+
+	    echo ""
+	    echo -e "\033[1;33mRecommendation: If any suspicious files are found, consider isolating the system for further investigation.\033[0m"
             ;;
         8)
             while true; do
@@ -271,7 +283,7 @@ while true; do
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mMost Frequent IP Accesses:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-			awk '{print $1}' "$logfile" | sort | uniq -c | sort -nr | head -20
+			awk '{print $1}' "$logfile" | sort | uniq -c | sort -nr
                         ;;
                     2)
 			read -p "Enter IP address to search: " ip_search
@@ -284,7 +296,7 @@ while true; do
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mMost Frequently Accessed Pages/URLs:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        awk '{print $7}' "$logfile" | sort | uniq -c | sort -nr | head
+                        awk '{print $7}' "$logfile" | sort | uniq -c | sort -nr
                         ;;
                     4)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
@@ -303,7 +315,7 @@ while true; do
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mBusiest Server Times:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        awk -F: '{print $2":"$3}' "$logfile" | sort | uniq -c | sort -nr | head
+                        awk -F: '{print $2":"$3}' "$logfile" | sort | uniq -c | sort -nr
                         ;;
                     7)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
