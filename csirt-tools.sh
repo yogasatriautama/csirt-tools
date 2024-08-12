@@ -53,7 +53,7 @@ display_access_log_menu() {
     echo "7) See the distribution of various user-agents"
     echo "8) Search by HTTP Method"
     echo "9) Search for SQL injection attempt"
-    echo "10) Search for XSS (Cross Site Scripting) attempt"
+    echo "10) Search for XSS attempt"
     echo "11) Search for LFI/RFI attempt"
     echo "12) Search for Common Web Attack"
     echo "13) Search for PHP CGI-bin vulnerability attempt"
@@ -377,19 +377,19 @@ while true; do
                         ;;
                     10)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        echo -e "\033[1;32mXSS (Cross Site Scripting) attempt:\033[0m"
+                        echo -e "\033[1;32mXSS attempt:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         display_xss
                         ;;
                     11)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        echo -e "\033[1;32mLFI/RFI Payloads:\033[0m"
+                        echo -e "\033[1;32mLFI/RFI attempt:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         grep -Ei "/etc/passwd|access.log|auth.log" "$logfile" | less 
                         ;;
                     12)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        echo -e "\033[1;32mCommon Web Attack Payloads:\033[0m"
+                        echo -e "\033[1;32mCommon Web Attack:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         display_common_web_attack
                         ;;
