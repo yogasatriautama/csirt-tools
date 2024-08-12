@@ -54,7 +54,7 @@ display_access_log_menu() {
     echo "8) Search by HTTP Method"
     echo "9) Search for SQL injection attempt"
     echo "10) Search for XSS (Cross Site Scripting) attempt"
-    echo "11) Search for LFI/RFI payload"
+    echo "11) Search for LFI/RFI attempt"
     echo "12) Search for Common Web Attack"
     echo "13) Search for PHP CGI-bin vulnerability attempt"
     echo "14) Search for Shellshock attack attempt"
