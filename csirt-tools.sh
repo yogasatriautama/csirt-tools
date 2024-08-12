@@ -58,7 +58,9 @@ display_access_log_menu() {
     echo "12) Search for Common Web Attack"
     echo "13) Search for PHP CGI-bin vulnerability attempt"
     echo "14) Search for Shellshock attack attempt"
-    echo "15) Return to Main Menu"
+    echo "15) Search for WP Scan attempt"
+    echo "16) Search for Webshell attempt"
+    echo "17) Return to Main Menu"
     echo -e "\e[0;033m"
     read -p "Enter your choice [1-13]: " access_choice
 }
@@ -94,27 +96,240 @@ display_sys_log_menu() {
     read -p "Enter your choice (1-5): " access_choice
 }
 
-display_xss() {
-    grep -Ei "<script>|%3Cscript%3E|%3C/script|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20|<script>alert\(\'XSS\'\)</script>|<img src=x onerror=alert\(\'XSS\'\);>|<svg onload=alert\(\'XSS\'\)>|<body onload=alert\(\'XSS\'\);>|<div onpointerover=\"alert\(\'XSS\'\)\">MOVE HERE</div>|<a href=javascript:alert\(\'XSS\'\)>" "$logfile" | less
+display_sql_injection() {
+    local pattern="select%20|select+|insert%20|%20from%20|%20where%20|union%20|union+|where+|null,null|xp_cmdshell|=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|%2Bunion%2B|%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045|%2csleep|sysdate\(\)|nslookup%20dns.sqli|select%20|insert%20"
+    grep -Ei "$pattern" "$logfile"
+    echo -e "\e[0;033m"
+    echo -e "\033[1;33mUsing pattern:\033[0m $pattern"
 }
 
-display_sql_injection() {
-    grep -Ei "=select%20|select+|insert%20|%20from%20|%20where%20|union%20|union+|where+|null,null|xp_cmdshell|=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|%2Bunion%2B|%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045|%2csleep|sysdate\(\)|nslookup%20dns.sqli|select%20|insert%20" "$logfile" | less
+display_xss() {
+    local pattern="<script>|%3Cscript%3E|%3C/script|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20|<script>alert\(\'XSS\'\)</script>|<img src=x onerror=alert\(\'XSS\'\);>|<svg onload=alert\(\'XSS\'\)>|<body onload=alert\(\'XSS\'\);>|<div onpointerover=\"alert\(\'XSS\'\)\">MOVE HERE</div>|<a href=javascript:alert\(\'XSS\'\)>"
+    grep -Ei "$pattern" "$logfile"
+    echo -e "\e[0;033m"
+    echo -e "\033[1;33mUsing pattern:\033[0m $pattern"
 }
 
 display_common_web_attack() {
-    grep -Ei "%027|%00|%01|%7f|%2E%2E|%0A|%0D|../..|..\..|echo;|cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|/x90/|default.ida|/sumthin|nsiislog.dll|chmod%|wget%|cd%20|exec%20|../..//|%5C../%5C|././././|2e%2e%5c%2e|\x5C\x5C" "$logfile" | less
+    local pattern="%027|%00|%01|%7f|%2E%2E|%0A|%0D|../..|..\..|echo;|cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|/x90/|default.ida|/sumthin|nsiislog.dll|chmod%|wget%|cd%20|exec%20|../..//|%5C../%5C|././././|2e%2e%5c%2e|\x5C\x5C"
+    grep -Ei "$pattern" "$logfile"
+    echo -e "\e[0;033m"
+    echo -e "\033[1;33mUsing pattern:\033[0m $pattern"
 }
 
 display_php_cgi_bin_vulnerability() {
-    grep -Ei "\?-d|\?-s|\?-a|\?-b|\?-w" "$logfile" | less
+    local pattern="\?-d|\?-s|\?-a|\?-b|\?-w"
+    grep -Ei "$pattern" "$logfile"
+    echo -e "\e[0;033m"
+    echo -e "\033[1;33mUsing pattern:\033[0m $pattern"
 }
 
 display_shellshock_attack() {
-    grep -E "\(\)\s*{\s*\w*:;\s*}\s*;|\(\)\s*{\s*\w*;\s*}\s*;|\(\)\s*{\s*_;\.*}\s*>_[\$\(\$\(\)\)]\s*{" "$logfile" | less
+    local pattern="\(\)\s*{\s*\w*:;\s*}\s*;|\(\)\s*{\s*\w*;\s*}\s*;|\(\)\s*{\s*_;\.*}\s*>_[\$\(\$\(\)\)]\s*{"
+    grep -Ei "$pattern" "$logfile"
+    echo -e "\e[0;033m"
+    echo -e "\033[1;33mUsing pattern:\033[0m $pattern"
 }
 
+display_wp_scan() {
+    local pattern="wp-includes|wp-login|wp-admin|wp-|wordpress|xmlrpc.php"
+    grep -Ei "$pattern" "$logfile"
+    echo -e "\e[0;033m"
+    echo -e "\033[1;33mUsing pattern:\033[0m $pattern" 
+}
 
+display_webshell_detection() {
+    local pattern="passthru|exec|eval|shell_exec|assert|str_rot13|system|phpinfo|base64_decode|chmod|mkdir|fopen|fclose|readfile|show_source|proc_open|pcntl_exec|execute|WScript.Shell|WScript.Network|FileSystemObject|Adodb.stream"
+    grep -Ei "$pattern" "$logfile"
+    echo -e "\e[0;033m"
+    echo -e "\033[1;33mUsing pattern:\033[0m $pattern"
+}
+
+display_system_version(){
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;32mSystem Version Information:\033[0m"
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    uname -a
+    cat /etc/lsb-release
+    echo ""
+	echo -e "\033[1;34mDisk Usage:\033[0m"
+	df -h
+	echo ""
+	lsblk
+	echo ""
+	echo -e "\033[1;34mRAM Usage:\033[0m"
+	free -mh
+	echo ""
+    echo -e "\033[1;33mRecommendation: Check for known vulnerabilities or patches related to the detected system version.\033[0m"
+}
+
+display_process(){
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;32mProcess, Service and Apps Information:\033[0m"
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+	echo -e "\033[1;34mRunning all process:\033[0m"
+    ps -aux
+    echo ""
+	echo -e "\033[1;34mCurrent user process:\033[0m"
+    ps -ef | grep -v '^root' | grep -E '/tmp|/dev/shm|nc|curl|wget|bash|sh|python|perl|php'
+    echo ""
+	echo -e "\033[1;34mServices that are set to run at startup:\033[0m"
+    systemctl list-unit-files --type=service | grep enabled
+    echo ""
+    echo -e "\033[1;34mStatus of running services:\033[0m"
+	systemctl list-units --type=service --state=running
+    echo ""
+    echo -e "\033[1;34mInstalled Packages:\033[0m"
+	dpkg -l
+ 	echo ""
+    echo -e "\033[1;33mRecommendation: Review running processes and startup for any suspicious activity or unknown services.\033[0m"
+}
+
+display_network(){
+    echo         -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;32mNetwork Communication Information:\033[0m"
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;34mInbound Connections:\033[0m"
+    netstat -tulnp 
+    echo ""
+    echo -e "\033[1;34mOutbound Connections:\033[0m"
+    netstat -antup
+    echo ""
+    echo -e "\033[1;34mEstablished Connections:\033[0m"
+    netstat -antup | grep "ESTA"
+    echo ""
+    echo -e "\033[1;34mFirewall:\033[0m"
+    echo ""
+    iptables -L -v -n
+	echo ""
+    echo -e "\033[1;34mConnected Users:\033[0m"
+    w
+    echo ""
+    echo -e "\033[1;34mDNS Configuration:\033[0m"
+    cat /etc/resolv.conf
+    echo ""
+    echo -e "\033[1;34mHostname:\033[0m"
+    cat /etc/hostname
+    echo ""
+    echo -e "\033[1;34mHosts File:\033[0m"
+    cat /etc/hosts
+    echo ""
+    echo -e "\033[1;33mRecommendation: Monitor network traffic for unusual connections, and verify the legitimacy of established connections.\033[0m"
+}
+
+display_user(){
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;32mUser Information:\033[0m"
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;34mUsers:\033[0m"
+    cat /etc/passwd
+    echo ""
+    echo -e "\033[1;34mUsers with Bash:\033[0m"
+    cat /etc/passwd | grep "bash"
+    echo ""
+    echo -e "\033[1;34mLast Logins:\033[0m"
+    lastlog
+    last
+    echo ""
+    echo -e "\033[1;34mCurrent logged-in users:\033[0m"
+    w
+    echo ""
+    echo -e "\033[1;34mUsers with Sudo:\033[0m"
+    getent group sudo | awk -F: '{print $4}' | tr ',' '\n' | while read user; do echo "User: $user"; sudo -l -U $user; echo "--------------------------------"; done
+    echo ""
+    echo -e "\033[1;34mDisplay Crontab for Each User:\033[0m"
+    for user in $(grep '/bin/bash' /etc/passwd | cut -f1 -d:); do echo "Crontab for $user:"; crontab -u $user -l; echo ""; done
+    echo ""
+    echo -e "\033[1;34mDisplay bash_history for Each User:\033[0m"; 
+    for user in $(cut -f1 -d: /etc/passwd); do homedir=$(getent passwd "$user" | cut -d: -f6); bash_history_file="$homedir/.bash_history"; if [ -f "$bash_history_file" ]; then echo -e "\033[1;34mbash_history for $user:\033[0m"; nl -w3 -s'. ' "$bash_history_file"; else echo "No bash_history found for $user"; fi; echo ""; done
+    echo -e "\033[1;33mRecommendation: Validate user accounts and review login history for unauthorized access.\033[0m"
+}
+
+display_file_modification(){
+    default_dir=$( [ -d /var/www/html ] && echo /var/www/html)
+    default_date=$(date '+%Y-%m-%d')
+
+    echo ""
+    echo -e "\033[1;32mPlease enter the directory path (press Enter to use default: $default_dir):\033[0m"
+    read target_dir
+    target_dir=${target_dir:-$default_dir}
+
+    if [ ! -d "$target_dir" ]; then
+            echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
+        exit 1
+    fi
+
+    echo ""
+    echo -e "\033[1;32mPlease enter the date for the search in the last 30 days before (press Enter to use today's date: $default_date):\033[0m"
+    read target_date
+    target_date=${target_date:-$default_date}
+
+    start_date=$(date -d "$target_date -30 days" '+%Y-%m-%d')
+
+    echo -e ""
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;32mDisplay File Modification: $target_dir\033[0m"
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e ""
+    ls -alrt "$target_dir"
+
+    echo -e ""
+    modified_files=$(find "$target_dir" -type f -newermt "$start_date" ! -newermt "$target_date" -ls)
+
+    if [ -z "$modified_files" ]; then
+            echo -e "\033[1;31mNo files found modified in the last 30 days before $target_date.\033[0m"
+    else
+        echo -e "\033[1;34mFiles Modified in the Last 30 Days Before $target_date (Recursive):\033[0m"
+        echo "$modified_files"
+    fi
+
+    echo ""
+    echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories.\033[0m"
+}
+
+display_file_writable(){
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;32mDirectory/Files Writable:\033[0m"
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo ""
+    echo -e "\033[1;34mDirectory:\033[0m"
+    find / \( -path /dev -o -path /proc -o -path /sys \) -prune -o -type d -perm -o=w -exec ls -ald {} \; 2>/dev/null
+    echo ""
+    echo "Press Enter to continue (Files)..."
+    read -r  # Menunggu user menekan Enter
+    echo ""
+    echo -e "\033[1;34mFiles:\033[0m"
+    find / \( -path /dev -o -path /proc -o -path /sys \) -prune -o -type f -perm -o=w -exec ls -ald {} \; 2>/dev/null
+    echo ""
+    echo "Press Enter to continue (SUID)..."
+    read -r  # Menunggu user menekan Enter
+    echo ""
+    echo -e "\033[1;34mSUID:\033[0m"
+    find / -perm -u=s -type f -exec ls -al {} \; 2>/dev/null
+    echo ""
+    echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories/files/SUID.\033[0m"
+}
+
+display_search_backdoor(){
+    default_dir="/var/www/html"
+    echo ""
+    echo -e "\033[1;32mPlease enter the directory path to search for backdoor files (press Enter to use default: $default_dir):\033[0m"
+    read target_dir
+    target_dir=${target_dir:-$default_dir}
+    if [ ! -d "$target_dir" ]; then
+        echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
+    exit 1
+    fi
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+    echo -e "\033[1;32mSearching for Backdoor Files...\033[0m"
+    echo -e "\033[1;32m----------------------------------------\033[0m"
+
+    echo -e "\033[1;34mTarget Directory: $target_dir\033[0m"
+    grep -RPn "(passthru|shell_exec|system|phpinfo|base64_decode|chmod|mkdir|fopen|fclose|fclose|readfile) *\(" "$target_dir"
+
+    echo ""
+    echo -e "\033[1;33mRecommendation: If any suspicious files are found, consider isolating the system for further investigation.\033[0m"
+}
 
 # Display the banner for the first time
 display_banner
@@ -128,187 +343,26 @@ while true; do
     # Process user choice
     case $choice in
         1)
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;32mSystem Version Information:\033[0m"
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            uname -a
-            cat /etc/lsb-release
-            echo ""
-	    echo -e "\033[1;34mDisk Usage:\033[0m"
-	    df -h
-	    echo ""
-	    lsblk
-	    echo ""
-	    echo -e "\033[1;34mRAM Usage:\033[0m"
-	    free -mh
-	    echo ""
-            echo -e "\033[1;33mRecommendation: Check for known vulnerabilities or patches related to the detected system version.\033[0m"
+            display_system_version
             ;;
         2)
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;32mProcess, Service and Apps Information:\033[0m"
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-	    echo -e "\033[1;34mRunning all process:\033[0m"
-            ps -aux
-            echo ""
-	    echo -e "\033[1;34mCurrent user process:\033[0m"
-            ps -ef | grep -v '^root' | grep -E '/tmp|/dev/shm|nc|curl|wget|bash|sh|python|perl|php'
-            echo ""
-	    echo -e "\033[1;34mServices that are set to run at startup:\033[0m"
-     	    systemctl list-unit-files --type=service | grep enabled
-            echo ""
-            echo -e "\033[1;34mStatus of running services:\033[0m"
-	    systemctl list-units --type=service --state=running
-            echo ""
-            echo -e "\033[1;34mInstalled Packages:\033[0m"
-	    dpkg -l
- 	    echo ""
-            echo -e "\033[1;33mRecommendation: Review running processes and startup for any suspicious activity or unknown services.\033[0m"
+            display_process
             ;;
         3)
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;32mNetwork Communication Information:\033[0m"
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;34mInbound Connections:\033[0m"
-            netstat -tulnp 
-            echo ""
-            echo -e "\033[1;34mOutbound Connections:\033[0m"
-            netstat -antup
-            echo ""
-            echo -e "\033[1;34mEstablished Connections:\033[0m"
-            netstat -antup | grep "ESTA"
-            echo ""
-            echo -e "\033[1;34mFirewall:\033[0m"
-            echo ""
-            iptables -L -v -n
-	    echo ""
-            echo -e "\033[1;34mConnected Users:\033[0m"
-            w
-            echo ""
-            echo -e "\033[1;34mDNS Configuration:\033[0m"
-            cat /etc/resolv.conf
-            echo ""
-            echo -e "\033[1;34mHostname:\033[0m"
-            cat /etc/hostname
-            echo ""
-            echo -e "\033[1;34mHosts File:\033[0m"
-            cat /etc/hosts
-            echo ""
-            echo -e "\033[1;33mRecommendation: Monitor network traffic for unusual connections, and verify the legitimacy of established connections.\033[0m"
+            display_network
             ;;
         4)
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;32mUser Information:\033[0m"
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;34mUsers:\033[0m"
-            cat /etc/passwd
-            echo ""
-            echo -e "\033[1;34mUsers with Bash:\033[0m"
-            cat /etc/passwd | grep "bash"
-            echo ""
-            echo -e "\033[1;34mLast Logins:\033[0m"
-            lastlog
-            last
-            echo ""
-            echo -e "\033[1;34mCurrent logged-in users:\033[0m"
-            w
-            echo ""
-            echo -e "\033[1;34mUsers with Sudo:\033[0m"
-            getent group sudo | awk -F: '{print $4}' | tr ',' '\n' | while read user; do echo "User: $user"; sudo -l -U $user; echo "--------------------------------"; done
-            echo ""
-            echo -e "\033[1;34mDisplay Crontab for Each User:\033[0m"
-            for user in $(cut -f1 -d: /etc/passwd); do echo "Crontab for $user:"; crontab -u $user -l; echo ""; done
- 	    echo ""
-            echo -e "\033[1;34mDisplay bash_history for Each User:\033[0m"; 
-	    for user in $(cut -f1 -d: /etc/passwd); do homedir=$(getent passwd "$user" | cut -d: -f6); bash_history_file="$homedir/.bash_history"; if [ -f "$bash_history_file" ]; then echo -e "\033[1;34mbash_history for $user:\033[0m"; nl -w3 -s'. ' "$bash_history_file"; else echo "No bash_history found for $user"; fi; echo ""; done
-	    echo -e "\033[1;33mRecommendation: Validate user accounts and review login history for unauthorized access.\033[0m"
+            display_user
             ;;
         5)
-	    default_dir=$( [ -d /var/www/html ] && echo /var/www/html || ([ -d /var/www ] && echo /var/www || ([ -d /home ] && echo /home)))
-	    default_date=$(date '+%Y-%m-%d')
-
-	    echo ""
-	    echo -e "\033[1;32mPlease enter the directory path (press Enter to use default: $default_dir):\033[0m"
-	    read target_dir
-	    target_dir=${target_dir:-$default_dir}
-
-	    if [ ! -d "$target_dir" ]; then
-    	      echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
-    	    exit 1
-	    fi
-
-	    echo ""
-	    echo -e "\033[1;32mPlease enter the date for the search in the last 30 days before (press Enter to use today's date: $default_date):\033[0m"
-	    read target_date
-	    target_date=${target_date:-$default_date}
-
-	    start_date=$(date -d "$target_date -30 days" '+%Y-%m-%d')
-
-	    echo -e ""
-	    echo -e "\033[1;32m----------------------------------------\033[0m"
-	    echo -e "\033[1;32mDirectory Listings: $target_dir\033[0m"
-	    echo -e "\033[1;32m----------------------------------------\033[0m"
-	    echo -e ""
-	    ls -alrt "$target_dir"
-
-	   echo -e ""
-	   modified_files=$(find "$target_dir" -type f -newermt "$start_date" ! -newermt "$target_date" -ls)
-
-	   if [ -z "$modified_files" ]; then
-    	     echo -e "\033[1;31mNo files found modified in the last 30 days before $target_date.\033[0m"
-	  else
-    	    echo -e "\033[1;34mFiles Modified in the Last 30 Days Before $target_date (Recursive):\033[0m"
-    	    echo "$modified_files"
-	  fi
-
-	  echo ""
-	  echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories.\033[0m"
+	        display_file_modification
           ;;
         6)
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo -e "\033[1;32mDirectory/Files Writable:\033[0m"
-            echo -e "\033[1;32m----------------------------------------\033[0m"
-            echo ""
-            echo -e "\033[1;34mDirectory:\033[0m"
-	    find / \( -path /dev -o -path /proc -o -path /sys \) -prune -o -type d -perm -o=w -exec ls -ald {} \; 2>/dev/null
-	    echo ""
-	    echo "Press Enter to continue (Files)..."
-	    read -r  # Menunggu user menekan Enter
-            echo ""
-            echo -e "\033[1;34mFiles:\033[0m"
-	    find / \( -path /dev -o -path /proc -o -path /sys \) -prune -o -type f -perm -o=w -exec ls -ald {} \; 2>/dev/null
-	    echo ""
-	    echo "Press Enter to continue (SUID)..."
-	    read -r  # Menunggu user menekan Enter
-	    echo ""
-	    echo -e "\033[1;34mSUID:\033[0m"
-	    find / -perm -u=s -type f -exec ls -al {} \; 2>/dev/null
-            echo ""
-            echo -e "\033[1;33mRecommendation: Check for suspicious files or recent changes in critical directories/files/SUID.\033[0m"
+            display_file_writable
             ;;
  
         7)
-	    default_dir="/var/www/html"
-
-	    echo ""
-	    echo -e "\033[1;32mPlease enter the directory path to search for backdoor files (press Enter to use default: $default_dir):\033[0m"
-	    read target_dir
-	    target_dir=${target_dir:-$default_dir}
-
-	    if [ ! -d "$target_dir" ]; then
-	    	echo -e "\033[1;31mError: Directory $target_dir does not exist. Please enter a valid directory.\033[0m"
-  	    exit 1
-	    fi
-
-	    echo -e "\033[1;32m----------------------------------------\033[0m"
-	    echo -e "\033[1;32mSearching for Backdoor Files...\033[0m"
-	    echo -e "\033[1;32m----------------------------------------\033[0m"
-
-	    echo -e "\033[1;34mTarget Directory: $target_dir\033[0m"
-	    grep -RPn "(passthru|shell_exec|system|phpinfo|base64_decode|chmod|mkdir|fopen|fclose|fclose|readfile) *\(" "$target_dir"
-
-	    echo ""
-	    echo -e "\033[1;33mRecommendation: If any suspicious files are found, consider isolating the system for further investigation.\033[0m"
+	        display_search_backdoor
             ;;
         8)
             while true; do
@@ -406,6 +460,18 @@ while true; do
                         display_shellshock_attack
                         ;;
                     15)
+                        echo -e "\033[1;32m----------------------------------------\033[0m"
+                        echo -e "\033[1;32mWP Scan attempt:\033[0m"
+                        echo -e "\033[1;32m----------------------------------------\033[0m"
+                        display_wp_scan
+                        ;;
+                    16)
+                        echo -e "\033[1;32m----------------------------------------\033[0m"
+                        echo -e "\033[1;32mWebshell attempt:\033[0m"
+                        echo -e "\033[1;32m----------------------------------------\033[0m"
+                        display_webshell_detection
+                        ;;
+                    17)
                         break
                         ;;
                     *)
@@ -418,12 +484,11 @@ while true; do
         9)
             while true; do
                 display_auth_log_menu
-		default_authlog=$( [ -f /var/log/auth.log ] && echo /var/log/auth.log || ([ -f /var/log/secure ] && echo /var/log/secure || echo /var/log/messages))
-		echo ""
-		echo -e "\033[1;32mPlease enter the path to the auth log file (press Enter to use default: $default_authlog):\033[0m"
-		read logfile
-		authlog=${authlog:-$default_authlog}
- 
+		        default_authlog=$( [ -f /var/log/auth.log ] && echo /var/log/auth.log || ([ -f /var/log/secure ] && echo /var/log/secure || echo /var/log/messages))
+		        echo ""
+		        echo -e "\033[1;32mPlease enter the path to the auth log file (press Enter to use default: $default_authlog):\033[0m"
+		        read logfile
+		        authlog=${authlog:-$default_authlog}
                 case $access_choice in
             1)
                 echo -e "\e[1;32m" # Green color
@@ -459,8 +524,8 @@ while true; do
                 echo -e "\e[0m" # Reset color
                 ;;
             6)
-		echo ""
-		grep -a -oP '(?<=from\s)([0-9]{1,3}\.){3}[0-9]{1,3}' "$authlog" | sort | uniq
+		        echo ""
+		        grep -a -oP '(?<=from\s)([0-9]{1,3}\.){3}[0-9]{1,3}' "$authlog" | sort | uniq
                 read -p "Enter IP address to analyze: " ip
                 echo -e "\e[1;32m" # Green color
                 echo "Login attempts from IP address $ip:"
@@ -468,9 +533,9 @@ while true; do
                 echo -e "\e[0m" # Reset color
                 ;;
             7)
-		echo ""
-		cat /etc/passwd | grep /bin/bash 
-		echo ""
+		        echo ""
+		        cat /etc/passwd | grep /bin/bash 
+		        echo ""
                 read -p "Enter username to analyze: " user
                 echo -e "\e[1;32m" # Green color
                 echo "Activity of user $user:"
@@ -490,11 +555,11 @@ while true; do
 	    ;;
 	10)
 	     while true; do
-             display_sys_log_menu
-    	     default_syslog=$( [ -f /var/log/syslog ] && echo /var/log/syslog || echo /var/log/messages )
-	     echo -e "\e[1;32mPlease enter the path to the syslog file (press Enter to use default: $default_syslog):\e[0m"
-	     read logfile
-    	     logfile=${logfile:-$default_syslog}
+            display_sys_log_menu
+    	    default_syslog=$( [ -f /var/log/syslog ] && echo /var/log/syslog || echo /var/log/messages )
+	        echo -e "\e[1;32mPlease enter the path to the syslog file (press Enter to use default: $default_syslog):\e[0m"
+	        read logfile
+    	    logfile=${logfile:-$default_syslog}
 
     		case $access_choice in
             1)
