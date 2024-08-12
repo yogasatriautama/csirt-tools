@@ -6,7 +6,6 @@ display_banner() {
     clear
     cat << "EOF"
 
-
            ___________ ________  ______
           / ____/ ___//  _/ __ \/_  __/
          / /    \__ \ / // /_/ / / /
@@ -40,7 +39,6 @@ display_menu() {
     read -p "Enter your choice [1-10]: " choice
 }
 
-# Function to display access log analysis menu
 display_access_log_menu() {
     echo -e "\033[1;34m************************************************************\033[0m"
     echo -e "\033[1;34mAccess Log Analysis\033[0m"
@@ -54,16 +52,17 @@ display_access_log_menu() {
     echo "6) See what time the server is busiest"
     echo "7) See the distribution of various user-agents"
     echo "8) Search by HTTP Method"
-    echo "9) Find SQL injection payload"
-    echo "10) Search for XSS payload"
+    echo "9) Search for SQL injection attempt"
+    echo "10) Search for XSS (Cross Site Scripting) attempt"
     echo "11) Search for LFI/RFI payload"
-    echo "12) Search for Admin Page"
-    echo "13) Return to Main Menu"
+    echo "12) Search for Common Web Attack"
+    echo "13) Search for PHP CGI-bin vulnerability attempt"
+    echo "14) Search for Shellshock attack attempt"
+    echo "15) Return to Main Menu"
     echo -e "\e[0;033m"
     read -p "Enter your choice [1-13]: " access_choice
 }
 
-# Function to display access log analysis menu
 display_auth_log_menu() {
     echo -e "\033[1;34m************************************************************\033[0m"
     echo -e "\033[1;34mAuth Log Analysis\033[0m"
@@ -81,7 +80,6 @@ display_auth_log_menu() {
     read -p "Enter your choice [1-8]: " access_choice
 }
 
-
 display_sys_log_menu() {
     echo -e "\033[1;34m************************************************************\033[0m"
     echo -e "\033[1;34mSystem log Analysis:\033[0m"
@@ -95,6 +93,27 @@ display_sys_log_menu() {
     echo -e "\e[0;033m"
     read -p "Enter your choice (1-5): " access_choice
 }
+
+display_xss() {
+    grep -Ei "<script>|%3Cscript%3E|%3C/script|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20|<script>alert\(\'XSS\'\)</script>|<img src=x onerror=alert\(\'XSS\'\);>|<svg onload=alert\(\'XSS\'\)>|<body onload=alert\(\'XSS\'\);>|<div onpointerover=\"alert\(\'XSS\'\)\">MOVE HERE</div>|<a href=javascript:alert\(\'XSS\'\)>" "$logfile" | less
+}
+
+display_sql_injection() {
+    grep -Ei "=select%20|select+|insert%20|%20from%20|%20where%20|union%20|union+|where+|null,null|xp_cmdshell|=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|%2Bunion%2B|%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045|%2csleep|sysdate\(\)|nslookup%20dns.sqli|select%20|insert%20" "$logfile" | less
+}
+
+display_common_web_attack() {
+    grep -Ei "%027|%00|%01|%7f|%2E%2E|%0A|%0D|../..|..\..|echo;|cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|/x90/|default.ida|/sumthin|nsiislog.dll|chmod%|wget%|cd%20|exec%20|../..//|%5C../%5C|././././|2e%2e%5c%2e|\x5C\x5C" "$logfile" | less
+}
+
+display_php_cgi_bin_vulnerability() {
+    grep -Ei "\?-d|\?-s|\?-a|\?-b|\?-w" "$logfile" | less
+}
+
+display_shellshock_attack() {
+    grep -E "\(\)\s*{\s*\w*:;\s*}\s*;|\(\)\s*{\s*\w*;\s*}\s*;|\(\)\s*{\s*_;\.*}\s*>_[\$\(\$\(\)\)]\s*{" "$logfile" | less
+}
+
 
 
 # Display the banner for the first time
@@ -294,20 +313,20 @@ while true; do
         8)
             while true; do
                 display_access_log_menu
-		default_logfile=$( [ -f /var/log/apache2/access.log ] && echo /var/log/apache2/access.log || ([ -f /var/log/httpd/access.log ] && echo /var/log/httpd/access.log || ([ -f /var/log/nginx/access.log ] && echo /var/log/nginx/access.log)))
-		echo ""
-		echo -e "\033[1;32mPlease enter the path to the access log file (press Enter to use default: $default_logfile):\033[0m"
-		read logfile
-		logfile=${logfile:-$default_logfile}
+		        default_logfile=$( [ -f /var/log/apache2/access.log ] && echo /var/log/apache2/access.log || ([ -f /var/log/httpd/access.log ] && echo /var/log/httpd/access.log || ([ -f /var/log/nginx/access.log ] && echo /var/log/nginx/access.log)))
+		        echo ""
+		        echo -e "\033[1;32mPlease enter the path to the access log file (press Enter to use default: $default_logfile):\033[0m"
+		        read logfile
+		        logfile=${logfile:-$default_logfile}
                 case $access_choice in
                     1)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mMost Frequent IP Accesses:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-			awk '{print $1}' "$logfile" | sort | uniq -c | sort -nr
+			            awk '{print $1}' "$logfile" | sort | uniq -c | sort -nr
                         ;;
                     2)
-			read -p "Enter IP address to search: " ip_search
+			            read -p "Enter IP address to search: " ip_search
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mActivity of IP $ip_search:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
@@ -354,13 +373,13 @@ while true; do
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mSQL Injection Payloads:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        grep -Ei "union|select|insert|drop|update|delete|load_file|outfile|version|database|concat" "$logfile" | less
+                        display_sql_injection
                         ;;
                     10)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        echo -e "\033[1;32mXSS Payloads:\033[0m"
+                        echo -e "\033[1;32mXSS (Cross Site Scripting) attempt:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        grep -Ei "<script>|%3Cscript%3E" "$logfile" | less
+                        display_xss
                         ;;
                     11)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
@@ -370,11 +389,23 @@ while true; do
                         ;;
                     12)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        echo -e "\033[1;32mAdmin Page Access Attempts:\033[0m"
+                        echo -e "\033[1;32mCommon Web Attack Payloads:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        grep -Ei "admin|administrator|adm|backend|cpanel|myadmin|phpmyadmin" "$logfile" | less
+                        display_common_web_attack
                         ;;
                     13)
+                        echo -e "\033[1;32m----------------------------------------\033[0m"
+                        echo -e "\033[1;32mPHP CGI-bin vulnerability attempt:\033[0m"
+                        echo -e "\033[1;32m----------------------------------------\033[0m"
+                        display_php_cgi_bin_vulnerability
+                        ;;
+                    14)
+                        echo -e "\033[1;32m----------------------------------------\033[0m"
+                        echo -e "\033[1;32mShellshock attack attempt:\033[0m"
+                        echo -e "\033[1;32m----------------------------------------\033[0m"
+                        display_shellshock_attack
+                        ;;
+                    15)
                         break
                         ;;
                     *)
