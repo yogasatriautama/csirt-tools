@@ -104,7 +104,7 @@ display_sql_injection() {
 }
 
 display_xss() {
-    local pattern="<script>|%3Cscript%3E|%3C/script|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20|<script>alert\(\'XSS\'\)</script>|<img src=x onerror=alert\(\'XSS\'\);>|<svg onload=alert\(\'XSS\'\)>|<body onload=alert\(\'XSS\'\);>|<div onpointerover=\"alert\(\'XSS\'\)\">MOVE HERE</div>|<a href=javascript:alert\(\'XSS\'\)>"
+    local pattern="<script>|%3Cscript%3E|%3C/script|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20"
     grep -Ei "$pattern" "$logfile"
     echo -e "\e[0;033m"
     echo -e "\033[1;33mUsing pattern:\033[0m $pattern"
