@@ -62,7 +62,7 @@ display_access_log_menu() {
     echo "16) Search for Webshell attempt"
     echo "17) Return to Main Menu"
     echo -e "\e[0;033m"
-    read -p "Enter your choice [1-13]: " access_choice
+    read -p "Enter your choice [1-17]: " access_choice
 }
 
 display_auth_log_menu() {
@@ -274,7 +274,8 @@ display_file_modification(){
     ls -alrt "$target_dir"
 
     echo -e ""
-    modified_files=$(find "$target_dir" -type f -newermt "$start_date" ! -newermt "$target_date" -ls)
+    modified_files=$(find "$target_dir" -type f -newermt "$start_date" ! -newermt "$target_date" -print | xargs ls -alrt --full-time)
+
 
     if [ -z "$modified_files" ]; then
             echo -e "\033[1;31mNo files found modified in the last 30 days before $target_date.\033[0m"
@@ -384,7 +385,7 @@ while true; do
                         echo -e "\033[1;32m----------------------------------------\033[0m"
                         echo -e "\033[1;32mActivity of IP $ip_search:\033[0m"
                         echo -e "\033[1;32m----------------------------------------\033[0m"
-                        grep "$ip_search" "$logfile"
+                        grep "$ip_search" "$logfile" | less
                         ;;
                     3)
                         echo -e "\033[1;32m----------------------------------------\033[0m"
