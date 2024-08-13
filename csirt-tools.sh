@@ -540,7 +540,7 @@ while true; do
                 read -p "Enter username to analyze: " user
                 echo -e "\e[1;32m" # Green color
                 echo "Activity of user $user:"
-                grep -a "$user" "$authlog"
+                grep -a "$user" "$authlog" | less
                 echo -e "\e[0m" # Reset color
                 ;;
             8)
