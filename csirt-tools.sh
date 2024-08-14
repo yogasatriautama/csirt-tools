@@ -238,7 +238,7 @@ display_user(){
     getent group sudo | awk -F: '{print $4}' | tr ',' '\n' | while read user; do echo "User: $user"; sudo -l -U $user; echo "--------------------------------"; done
     echo ""
     echo -e "\033[1;34mDisplay Crontab for Each User:\033[0m"
-    for user in $(grep '/bin/bash' /etc/passwd | cut -f1 -d:); do echo "Crontab for $user:"; crontab -u $user -l; echo ""; done
+    for user in $(cat /etc/passwd | cut -f1 -d:); do echo "Crontab for $user:"; crontab -u $user -l; echo ""; done
     echo ""
     echo -e "\033[1;34mDisplay bash_history for Each User:\033[0m"; 
     for user in $(cut -f1 -d: /etc/passwd); do homedir=$(getent passwd "$user" | cut -d: -f6); bash_history_file="$homedir/.bash_history"; if [ -f "$bash_history_file" ]; then echo -e "\033[1;34mbash_history for $user:\033[0m"; nl -w3 -s'. ' "$bash_history_file"; else echo "No bash_history found for $user"; fi; echo ""; done
